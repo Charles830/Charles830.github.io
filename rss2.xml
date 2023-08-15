@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>罗逸冲</title>
+    <link>http://example.com/</link>
+    
+    <atom:link href="http://example.com/rss2.xml" rel="self" type="application/rss+xml"/>
+    
+    <description>人生是用来体验的</description>
+    <pubDate>Mon, 14 Aug 2023 23:47:43 GMT</pubDate>
+    <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>AIGC_1</title>
+      <link>http://example.com/2023/08/14/AIGC-1/AIGC-1/</link>
+      <guid>http://example.com/2023/08/14/AIGC-1/AIGC-1/</guid>
+      <pubDate>Mon, 14 Aug 2023 15:22:11 GMT</pubDate>
+      
+        
+        
+      <description>&lt;center&gt;
+
+&lt;h1 id=&quot;AIGC项目（1）&quot;&gt;&lt;a href=&quot;#AIGC项目（1）&quot; class=&quot;headerlink&quot; title=&quot;AIGC项目（1）&quot;&gt;&lt;/a&gt;AIGC项目（1）&lt;/h1&gt;&lt;/center&gt;
+
+
+&lt;h2 id=&quot;项目：吃了么GPT&quot;&gt;&lt;a h</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<center><h1 id="AIGC项目（1）"><a href="#AIGC项目（1）" class="headerlink" title="AIGC项目（1）"></a>AIGC项目（1）</h1></center><h2 id="项目：吃了么GPT"><a href="#项目：吃了么GPT" class="headerlink" title="项目：吃了么GPT"></a>项目：吃了么GPT</h2><p>(1)项目简介：最近经常做饭，想到可以训练一个专属的厨师模型来作为小助手，帮自己定菜谱，还能提供各类菜肴的做法，未来细分领域中专家GPT一定会成为趋势，主流应用也会往AIG的方向发展。</p><p>(2)项目实现效果：</p><p><img src="https://i.postimg.cc/mg2qvmbR/eatgpt.jpg" alt="吃了么GPT"></p><p>(3)项目代码：</p><pre><code>import openai #调用OpenAI GPT-3 API的Python包。允许我们与OpenAI的自然语言处理模型进行交互import streamlit as st #老熟人# from streamlit_chat import messagefrom st_chat_message import message #显示聊天的样式from PIL import Image # 用来加载和处理图片proxy = &#123;&#39;http&#39;: &#39;http://localhost:7890&#39;,&#39;https&#39;: &#39;http://localhost:7890&#39;&#125;openai.proxy = proxy;# 这部分代码涉及到代理，用于与OpenAI进行通讯，用这个代理配置貌似无需科学上网openai.api_key = &#39;YOUR API&#39;# 设置访问OpenAI的密钥if &#39;prompts&#39; not in st.session_state:    st.session_state[&#39;prompts&#39;] = [&#123;&quot;role&quot;: &quot;system&quot;,                                    # &quot;content&quot;: &quot;You are a helpful assistant. Answer as concisely as possible with a little humor expression.&quot;&#125;                                    &quot;content&quot;: &quot;You are a chef from China, &quot;                                               &quot;please use all your talents to give me advice without using too many polite words.&quot;&#125;                                   ]# 提示包含一个 &quot;role&quot; 和 &quot;content&quot;，用于在聊天界面中显示对话if &#39;generated&#39; not in st.session_state:    st.session_state[&#39;generated&#39;] = []# 创建了名为 &#39;generated&#39; 的空列表，并将其存储在会话状态中。这个列表将用于存储由 GPT-3 生成的响应消息if &#39;past&#39; not in st.session_state:    st.session_state[&#39;past&#39;] = []# 创建了名为 &#39;past&#39; 的空列表，并将其存储在会话状态中。这个列表将用于存储过去的聊天历史记录def generate_response(prompt):    st.session_state[&#39;prompts&#39;].append(&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt&#125;)    # 添加用户输入的对话提示到会话状态中    completion = openai.ChatCompletion.create(        model=&quot;gpt-3.5-turbo&quot;,        messages=st.session_state[&#39;prompts&#39;]    )    # 调用 OpenAI GPT-3 API 生成响应消息    message = completion.choices[0].message.content    # 提取生成的响应消息    return message    # 返回生成的响应消息def end_click():    st.session_state[&#39;prompts&#39;] = [&#123;&quot;role&quot;: &quot;system&quot;,                                    # &quot;content&quot;: &quot;You are a helpful assistant. Answer as concisely as possible with a little humor expression.&quot;&#125;                                    &quot;content&quot;: &quot;You are a chef from China, &quot;                                               &quot;please use all your talents to give me advice without using too many polite words.&quot;&#125;                                   ]    # 重置对话提示为一个系统角色的初始提示    st.session_state[&#39;past&#39;] = []    # 重置聊天历史记录    st.session_state[&#39;generated&#39;] = []    # 重置生成的响应消息    st.session_state[&#39;user&#39;] = &quot;&quot;    # 重置用户输入def chat_click():    if st.session_state[&#39;user&#39;] != &#39;&#39;:        # 检查用户是否输入了内容        chat_input = st.session_state[&#39;user&#39;]        # 获取用户输入的对话内容        output = generate_response(chat_input)        # 生成对话的响应        st.session_state[&#39;past&#39;].append(chat_input)        # 存储用户输入到聊天历史记录        # store the output        st.session_state[&#39;generated&#39;].append(output)        # 存储生成的响应到聊天历史记录        st.session_state[&#39;prompts&#39;].append(&#123;&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: output&#125;)        # 将生成的响应添加到对话历史中，并标记为来自助手角色        st.session_state[&#39;user&#39;] = &quot;&quot;        # 重置用户输入，以准备接受下一轮对话输入if __name__ == &#39;__main__&#39;:    image = Image.open(r&#39;D:\桌面\AIGC\ShuitunChat\chicken.png&#39;)    # 用于打开一个名为chicken.png的图片文件    st.image(image, width=80)    # 使用streamlit的image组件显示打开的图片, 并设置图片宽度为80像素    # st.title(&quot;吃了么GPT&quot;, anchor=&#39;center&#39;)    st.markdown(&#39;&lt;h1 style=&quot;text-align:center;&quot;&gt;吃了么GPT&lt;/h1&gt;&#39;, unsafe_allow_html=True)    # 使得标题居中    st.markdown(        &#39;&#39;&#39;        &lt;center&gt;            &lt;span&gt;                 &lt;h3&gt;                    Made by Jiaai Studio                 &lt;/h3&gt;                &lt;/span&gt;        &lt;/center&gt;        &#39;&#39;&#39;,unsafe_allow_html=True    )    # 来一个负责优化的作者    user_input = st.text_input(&quot;您想吃什么:&quot;, key=&quot;user&quot;)    # 使用streamlit的text_input组件获取用户输入, 提示语为    # &quot;您想吃什么:&quot;,    # 并将输入赋值给user_input变量。key参数用于在会话中保持这个组件的状态    chat_button = st.button(&quot;发送&quot;, on_click=chat_click)    # 使用streamlit的button组件创建一个按钮, 文本为    # &quot;发送&quot;,    # 并绑定点击事件chat_click    end_button = st.button(&quot;新的聊天&quot;, on_click=end_click)    # 创建一个按钮, 文本为    # &quot;新的聊天&quot;,    # 绑定点击事件end_click    if st.session_state[&#39;generated&#39;]:        for i in range(len(st.session_state[&#39;generated&#39;]) - 1, -1, -1):            message(st.session_state[&#39;generated&#39;][i], key=str(i))            message(st.session_state[&#39;past&#39;][i], is_user=True, key=str(i) + &#39;_user&#39;)            # tab1,tab2 = st.tabs([&quot;正常&quot;,&quot;加强&quot;])            # with tab1:            #     message(st.session_state[&#39;generated&#39;][i], key=str(i))            # with tab2:            #     st.markdown(st.session_state[&#39;generated&#39;][i])            # message(st.session_state[&#39;past&#39;][i], is_user=True, key=str(i) + &#39;_user&#39;)</code></pre><blockquote><p>参考文章：<a href="https://zhuanlan.zhihu.com/p/613172533">https://zhuanlan.zhihu.com/p/613172533</a></p></blockquote>]]></content:encoded>
+      
+      
+      <category domain="http://example.com/categories/AIGC%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0/">AIGC项目笔记</category>
+      
+      
+      <category domain="http://example.com/tags/AIGC/">AIGC</category>
+      
+      
+      <comments>http://example.com/2023/08/14/AIGC-1/AIGC-1/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>DL_1</title>
+      <link>http://example.com/2023/03/17/DL-1/DL-1/</link>
+      <guid>http://example.com/2023/03/17/DL-1/DL-1/</guid>
+      <pubDate>Fri, 17 Mar 2023 05:20:38 GMT</pubDate>
+      
+        
+        
+      <description>&lt;center&gt;
+
+&lt;h1 id=&quot;深度学习笔记（1）&quot;&gt;&lt;a href=&quot;#深度学习笔记（1）&quot; class=&quot;headerlink&quot; title=&quot;深度学习笔记（1）&quot;&gt;&lt;/a&gt;深度学习笔记（1）&lt;/h1&gt;&lt;/center&gt;
+
+
+&lt;h2 id=&quot;1-神经网络基础：&quot;&gt;&lt;a h</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<center><h1 id="深度学习笔记（1）"><a href="#深度学习笔记（1）" class="headerlink" title="深度学习笔记（1）"></a>深度学习笔记（1）</h1></center><h2 id="1-神经网络基础："><a href="#1-神经网络基础：" class="headerlink" title="1.神经网络基础："></a>1.神经网络基础：</h2><p>（1）前向传播 </p><p>前向传播（forward propagation或forward pass） 指的是：按顺序（从输入层到输出层）计算和存储神经网络中每层的结果。</p><p><img src="https://i.postimg.cc/0QtyWRKH/t1.png" alt="前向传播流程图"></p><p>前向传播中的线性函数：</p><p>从输入到输出的映射 <strong>f(x,W)<strong>，</strong>x</strong> 是 <strong>image</strong>，<strong>W</strong> 是<strong>parameters</strong>（权重参数），映射完之后会得到每个类别的得分。</p><p>数学表示：<strong>f(x,W) &#x3D; Wx + b</strong></p><p>计算方法：矩阵变换和矩阵运算。</p><p>但是在神经网络中，简单加入线性函数是只能解决线性回归问题的，想要解决更复杂的问题需要加入激活函数。下文会详述。</p><p>（2）传播过程 </p><p>损失函数是用来衡量神经网络的输出和真实值之间的差距的，传播过程中会有损失。</p><p>损失函数 &#x3D; 数据损失 + 正则化惩罚项（我们希望模型不要太过复杂，过拟合的模型是无效的）。</p><p>（3）传播结果：Softmax分离器 </p><p>把得分值转换成一个概率值，并通过归一化，得到概率值 + 计算损失值。</p><p>（4）反向传播：梯度下降 </p><p>反向传播算法是一种梯度下降算法，它从输出层开始，逐层地计算每个参数对损失函数的偏导数（梯度），然后用这些梯度来调整参数，使得损失函数变小。</p><p><img src="https://i.postimg.cc/Pr78fZxF/t2.png" alt="反向传播流程图"></p><p><strong>总结起来：神经网络首先先进行前向传播，然后经过一系列计算得出数据损失，加上正则化惩罚项得到损失值，然后是更新模型，方法是反向传播（梯度下降）。</strong></p><h2 id="2-神经网络整体架构："><a href="#2-神经网络整体架构：" class="headerlink" title="2.神经网络整体架构："></a>2.神经网络整体架构：</h2><p>  <strong>具体流程：input layer –&gt; hidden layer 1 –&gt; hidden layer 2 –&gt; output layer</strong></p><p>  input layer:输入层</p><p>  hidden layer:隐藏层（1和2）</p><p>  output layer:输出层</p><p>  <strong>基本机构：f &#x3D; W2max(0,W1x)，继续堆叠一层：f &#x3D; W3max(0,W2max(0,W1x))</strong></p><h2 id="3-常用激活函数"><a href="#3-常用激活函数" class="headerlink" title="3.常用激活函数"></a>3.常用激活函数</h2><p>  Sigmoid：现在不经常用，原因是有梯度消失的函数区间。</p><p>  Relu：经常用，梯度很好计算。</p><p>  Tanh：解决了原点中心对称问题。</p><p>  代码演示（以Tanh为例）：</p><pre><code>layer_defs = [];layer_defs.push(&#123;type:&#39;input&#39;, out_sx:1, out_sy:1, out_depth:2&#125;);layer_defs.push(&#123;type:&#39;fc&#39;, num_neurons:10, activation: &#39;tanh&#39;&#125;);layer_defs.push(&#123;type:&#39;fc&#39;, num_neurons:10, activation: &#39;tanh&#39;&#125;);layer_defs.push(&#123;type:&#39;softmax&#39;, num_classes:2&#125;);net = new convnetjs.Net();net.makeLayers(layer_defs);trainer = new convnetjs.SGDTrainer(net, &#123;learning_rate:0.01, momentum:0.1, batch_size:10, l2_decay:0.001&#125;);</code></pre><p>  这段代码是用ConvNetJS这个JavaScript库来创建和训练一个神经网络的。神经网络是一种深度学习模型，可以用来处理各种数据，比如图像、文本、语音等。</p><p>  代码的第一部分定义了一个名为layer_defs的数组，用来存储神经网络的各层的类型和参数。例如，第一层是输入层，它接收两个数值作为输入；第二层和第三层是全连接层，它们有10个和10个神经元，并使用双曲正切函数作为激活函数；最后一层是softmax层，它输出两个类别的概率。</p><p>  代码的第二部分创建了一个名为net的对象，用来表示神经网络。它调用了makeLayers方法，根据layer_defs数组来构建神经网络的结构。</p><p>  代码的第三部分创建了一个名为trainer的对象，用来训练神经网络。它调用了SGDTrainer方法，指定了随机梯度下降算法作为优化器，并设置了学习率、动量、批量大小和L2正则化等参数。</p><p>  效果如下：</p><p>  对于圆形区域数据：</p><p>  <img src="https://i.postimg.cc/SR2kgXhJ/t3.png"></p><p>  对于螺旋形区域数据：</p><p>  <img src="https://i.postimg.cc/pdCWrbCX/t4.png"></p><blockquote><p>模型来源：<a href="https://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html">https://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html</a></p></blockquote>]]></content:encoded>
+      
+      
+      <category domain="http://example.com/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">深度学习笔记</category>
+      
+      
+      <category domain="http://example.com/tags/Deep-Learning/">Deep Learning</category>
+      
+      
+      <comments>http://example.com/2023/03/17/DL-1/DL-1/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>恋爱记录 Plog 1</title>
+      <link>http://example.com/2023/03/17/my-post-1/my-post-1/</link>
+      <guid>http://example.com/2023/03/17/my-post-1/my-post-1/</guid>
+      <pubDate>Thu, 16 Mar 2023 16:06:24 GMT</pubDate>
+      
+        
+        
+      <description>&lt;center&gt;
+
+
+&lt;p&gt;&lt;img src=&quot;https://i.postimg.cc/c4ccx8mw/01.jpg&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2021.5 于珠海摄&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.postimg.cc/FRJZNWWH/02.jpg&quot;&gt;&lt;/p</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<center><p><img src="https://i.postimg.cc/c4ccx8mw/01.jpg"></p><p>2021.5 于珠海摄</p><p><img src="https://i.postimg.cc/FRJZNWWH/02.jpg"></p><p>2021.8 七夕节</p><p><img src="https://i.postimg.cc/c4GD4WNy/03.jpg"></p><p>2022.1 在DayDreamer</p><p><img src="https://i.postimg.cc/bv5gXcR5/04.jpg"></p><p>2022.2 情人节的花和你</p><p><img src="https://i.postimg.cc/ncK3XWHs/05.jpg"></p><p>2022.11 十一月于家</p><p>点击标题可进入详情页。 </p>]]></content:encoded>
+      
+      
+      
+      
+      <comments>http://example.com/2023/03/17/my-post-1/my-post-1/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>个人简介</title>
+      <link>http://example.com/2023/02/27/My-New-Post/My-New-Post/</link>
+      <guid>http://example.com/2023/02/27/My-New-Post/My-New-Post/</guid>
+      <pubDate>Mon, 27 Feb 2023 08:20:15 GMT</pubDate>
+      
+        
+        
+      <description>&lt;center&gt; 
+
+&lt;h1 id=&quot;欢迎来到我的个人主页！&quot;&gt;&lt;a href=&quot;#欢迎来到我的个人主页！&quot; class=&quot;headerlink&quot; title=&quot;欢迎来到我的个人主页！&quot;&gt;&lt;/a&gt;欢迎来到我的个人主页！&lt;/h1&gt;&lt;p&gt;我是来自中山的Charles，&lt;/p&gt;
+&lt;p&gt;</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<center> <h1 id="欢迎来到我的个人主页！"><a href="#欢迎来到我的个人主页！" class="headerlink" title="欢迎来到我的个人主页！"></a>欢迎来到我的个人主页！</h1><p>我是来自中山的Charles，</p><p>有个美丽可爱的女朋友，</p><p>希望家人朋友永远平安快乐。</p><p><img src="https://i.postimg.cc/TLdF0g3L/img-Flowers.jpg"></p><h2 id="个人网站内容"><a href="#个人网站内容" class="headerlink" title="个人网站内容"></a>个人网站内容</h2><p>个人网站主要更新自己的生活和研究，定期分享干货。</p><h2 id="个人工作学习方向："><a href="#个人工作学习方向：" class="headerlink" title="个人工作学习方向："></a>个人工作学习方向：</h2><p>目前研究生成式人工智能 (AIGC), 深度学习 (Deep Learning) 和数字孪生 (Digital Twin) 。</p><!-- ## 个人简历： ##西门子助理工程师证书，TÜV Rheinland Certified Integrate，曾获省奖、国奖等。## 我的兴趣领域： ##### 篮球 ###最喜欢的球星是勒布朗.詹姆斯，希望有机会能去现场看詹姆斯的比赛。![](https://i.postimg.cc/MXP2sPRW/img-Kobe-LBJ.jpg)友情链接：[https://china.nba.cn/](https://china.nba.cn/)### 汽车 ###喜欢的车：奥迪RS7和奔驰cls（最近在研究汽车构造）。![](https://i.postimg.cc/5Xzh2fr0/img-RS7.jpg)![](https://i.postimg.cc/R3zj3jrT/img-RS7-1.jpg)友情链接: [https://www.topspeed.com/](https://www.topspeed.com/)### 建筑 ###喜欢的建筑风格：中国古代建筑、哥特式建筑、现代主义建筑和后现代主义建筑。![](https://i.postimg.cc/LqBGjN2F/img-Architectures.jpg)友情链接：[https://www.archdaily.com/](https://www.archdaily.com/)### 结语：希望我们都能追寻爱和拥有爱 ###![](https://i.postimg.cc/rKD671C5/img-Love.jpg)-->]]></content:encoded>
+      
+      
+      
+      
+      <comments>http://example.com/2023/02/27/My-New-Post/My-New-Post/#disqus_thread</comments>
+      
+    </item>
+    
+  </channel>
+</rss>
